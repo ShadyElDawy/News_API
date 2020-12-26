@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\AuthorCommentsResource;
+use App\Http\Resources\AuthorPostsResource;
 use App\Http\Resources\UsersResource;
 use App\Http\Resources\UserResource;
 
@@ -40,9 +42,31 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id) //this param is what is in route {id}
     {
         return new UserResource(User::find($id));
+    }
+
+    /**
+     * @param $id
+     * @return AuthorPostsResource
+     */
+    public function posts($id)
+    {
+        $user = User::find($id);  //get the object
+        $posts = $user->posts()->paginate(5); //posts into obeject
+        return new AuthorPostsResource($posts); //can use UserResource but it doesn't return links and meta as it's not collection, so no pagination
+    }
+
+
+    /**
+     * @param $id
+     * @return AuthorCommentsResource
+     */
+    public function comments($id){
+        $user = User::find($id);
+        $comments = $user->comments()->paginate(15);
+        return new AuthorCommentsResource($comments);
     }
 
     /**
