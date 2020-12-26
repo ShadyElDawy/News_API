@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -12,6 +13,11 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+// once we are in api file not web, so our namespace would be api/users
+Route::get('/authors', 'Api\\UserController@index');
+Route::get('/authors/{id}', 'Api\\UserController@show'); //takes param
+
+
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();

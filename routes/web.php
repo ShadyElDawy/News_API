@@ -11,9 +11,9 @@
 |
 */
 
-Route::get('/categories', function (){
+/*Route::get('/categories', function (){
     return \App\User::all(); //this means find user of id 25 and "->" means get into this user and call function Posts we created in relations
-});
+});*/
 
 Route::get('/', function () {
     return view('welcome');
