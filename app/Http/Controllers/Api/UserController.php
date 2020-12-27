@@ -5,12 +5,15 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AuthorCommentsResource;
 use App\Http\Resources\AuthorPostsResource;
+use App\Http\Resources\TokenResource;
 use App\Http\Resources\UsersResource;
 use App\Http\Resources\UserResource;
 
 use App\User;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use function MongoDB\BSON\toJSON;
 
 class UserController extends Controller
 {
@@ -79,6 +82,20 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         //
+    }
+
+    //after submitting form, or sending params to route (using postman) all values entered by user get stored in Request object, email and password
+    public function getToken(Request $request){
+        $request->validate([
+            'email' => 'required',
+            'password' => 'required',
+        ]); //validations of user inputs
+        $credentials = $request -> only('email','password'); //request has a lot of other info that we don't need
+        if (Auth::attempt($credentials)){
+            $user = User::where('email', $request->get('email'))->first(); //if login true, grap this user using the email he logged in with
+            return new TokenResource(['token'=>$user->api_token]); //then api_token gets posted to route we specified, format is to return as json not string.
+        }
+        return 'not found';
     }
 
     /**
