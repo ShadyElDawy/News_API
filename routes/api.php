@@ -38,6 +38,10 @@ Route::get('comments/posts/{id}', 'Api\PostController@comments');
 Route::post('register', 'api\UserController@store');
 Route::post('token', 'api\UserController@getToken');
 
+
+//use auth for all post routes to insure user is logged in
 Route::middleware('auth:api')->group( function() {
     Route::post('update-user/{id}','api\UserController@update');
+    Route::post('posts','api\PostController@store'); //create new post
+
 });
