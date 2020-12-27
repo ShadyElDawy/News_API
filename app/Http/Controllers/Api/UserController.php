@@ -13,7 +13,7 @@ use App\User;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use function MongoDB\BSON\toJSON;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -29,14 +29,25 @@ class UserController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return UserResource
      */
     public function store(Request $request)
     {
-        //
+        //validate user inputs
+        $request->validate([
+            'name' => 'required',
+           'email'=>'required',
+           'password'=> 'required',
+        ]); //once we create this user, observer will generate api_token auto for him
+
+        $user = new User(); //create new user
+        $user->name = $request->get('name'); //set new user name as user's input in request
+        $user->email = $request->get('email'); //set user email as user's input
+        $user->password = Hash::make($request->get('password')); //get user password and hash it into db
+
+        $user->save(); //save user to database
+        return new UserResource($user); //return user object data(email, name etc) and post it to route register
     }
 
     /**
@@ -84,6 +95,10 @@ class UserController extends Controller
         //
     }
 
+    /**
+     * @param Request $request
+     * @return TokenResource|string
+     */
     //after submitting form, or sending params to route (using postman) all values entered by user get stored in Request object, email and password
     public function getToken(Request $request){
         $request->validate([

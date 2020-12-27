@@ -25,8 +25,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
-    ];
+        'password', 'remember_token','api_token',
+    ]; //won't be returned in Json response
 
     /**
      * The attributes that should be cast to native types.

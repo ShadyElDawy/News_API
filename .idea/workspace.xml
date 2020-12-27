@@ -25,7 +25,8 @@
     <list default="true" id="153bebbb-1fbd-41c0-a4be-a42ce89f0f45" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Api/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Api/UserController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Observers/UserObserver.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Observers/UserObserver.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/User.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -163,6 +164,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="DatabaseDriversLRU" value="mysql" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
@@ -191,7 +193,7 @@
       <workItem from="1608850022455" duration="430000" />
       <workItem from="1608852059611" duration="5310000" />
       <workItem from="1608861410872" duration="4934000" />
-      <workItem from="1608924581576" duration="49947000" />
+      <workItem from="1608924581576" duration="54096000" />
     </task>
     <servers />
   </component>
@@ -219,6 +221,10 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="275" y="10" key="#Plugins/0.0.1366.738@0.0.1366.738" timestamp="1608857309452" />
+    <state x="275" y="27" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1609052115707">
+      <screen x="0" y="0" width="1366" height="738" />
+    </state>
+    <state x="275" y="27" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1366.738@0.0.1366.738" timestamp="1609052115707" />
     <state width="1286" height="166" key="GridCell.Tab.0.bottom" timestamp="1608848257457">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
