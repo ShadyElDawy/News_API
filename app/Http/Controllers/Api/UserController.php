@@ -84,15 +84,24 @@ class UserController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param $id
+     * @return UserResource
      */
     public function update(Request $request, $id)
     {
-        //
+        //mail can't be changed
+        //check if
+        $user = User::find($id);
+        if($request->has('name')){
+            $user->name=$request->get('name');
+        }
+        if($request->has('avatar')){
+            $user->avatar = $request->get('avatar');
+        }
+        $user->save(); //save to database
+        return new UserResource($user);
+
     }
 
     /**
