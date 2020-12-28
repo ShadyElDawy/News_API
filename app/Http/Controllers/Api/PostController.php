@@ -151,7 +151,8 @@ class PostController extends Controller
 
     public function destroy($id)
     {
-        $post = Post::destroy($id); //destroy post
+        $post = Post::find($id);
+        $post->delete(); //destroy post
         return new PostResource($post);
     }
 }
