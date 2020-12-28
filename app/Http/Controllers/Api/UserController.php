@@ -14,18 +14,17 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @return UsersResource
      */
     public function index()
     {
-        $users = \App\User::all();
-        return new \App\Http\Resources\UsersResource($users);
+        $users = User::all();
+        return new UsersResource($users);
     }
 
     /**
@@ -51,10 +50,8 @@ class UserController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return UserResource
      */
     public function show($id) //this param is what is in route {id}
     {
@@ -99,6 +96,22 @@ class UserController extends Controller
         if($request->has('avatar')){
             $user->avatar = $request->get('avatar');
         }
+
+        if ($request->hasFile('avatar')){
+            $featuredImage = $request->file('avatar'); //getting the image
+
+            $filename= time().$featuredImage->getClientOriginalName(); //setting file name, with time+original file name
+            Storage::disk('images')->putFileAs(
+                $filename,
+                $featuredImage,
+                $filename
+            ); //putFileAs function to stor uploaded files on disk(go to config/filesystem/images) with a given name
+
+            $user->avatar = url('/') .'/images/'.$filename; // goto file path and get the image from the path
+        }
+
+
+
         $user->save(); //save to database
         return new UserResource($user);
 
