@@ -20,7 +20,9 @@ class PostController extends Controller
      */
     public function index()
     {
-        return new PostsResource(Post::paginate(10));
+        //get all posts, attached wit it's comments and authors
+        $post = Post::with(['comments', 'author', 'category'])->paginate(10);
+        return new PostsResource($post);
     }
 
 

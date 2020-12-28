@@ -55,6 +55,7 @@ class UserController extends Controller
      */
     public function show($id) //this param is what is in route {id}
     {
+
         return new UserResource(User::find($id));
     }
 
