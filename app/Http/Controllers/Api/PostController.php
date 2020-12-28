@@ -148,14 +148,10 @@ class PostController extends Controller
         return new PostResource($post);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function destroy($id)
     {
-        //
+        $post = Post::destroy($id); //destroy post
+        return new PostResource($post);
     }
 }
