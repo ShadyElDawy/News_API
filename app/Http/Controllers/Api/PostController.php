@@ -35,9 +35,9 @@ class PostController extends Controller
             'content' => 'required',
             'category_id' => 'required',
         ]); //required that user pick category from droplist menu, each category will be linked to an id that exitst in db (e.g. 'sport' => '5')
-        $user= $request->user(); //returns user object who creating the post from request (relationships)
+
         $post = new Post();
-        $post->user_id = $user->id;
+        $post->user_id = $request->user()->id; //returns user object -> id who creating the post from request (relationships)
         $post->title = $request->get('title');
         $post->content = $request->get('content');
         $post->category_id = $request->get('category_id');
