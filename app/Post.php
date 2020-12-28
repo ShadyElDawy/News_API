@@ -11,8 +11,10 @@ class Post extends Model
 
     ];
 
+    //Author relationship in Post model doesn’t have the same column name in post table to make relationship(which is user_id),
+    // So we have to specify foreign key and the real owner column in user table(which is id)
     public function author(){
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function comments(){

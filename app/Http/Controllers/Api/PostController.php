@@ -74,14 +74,21 @@ class PostController extends Controller
         //return new PostResource([$post, 'title'=> "$Cattitle"]); //alsso working
         return new PostResource($post);
     }
+
     /**
      * @param $id
      * @return PostResource
      */
     public function show($id)
     {
+        /*
         $post = Post::find($id);
-        return new PostResource($post); //it's not a collection resource but returns only one post/object
+        $comments = $post->comments;
+        return new PostResource($post,$post->comments); //it's not a collection resource, but returns only one post/object
+        //return response(["posts" => $post, "comments" => $post->comments],200); //also working
+        */
+        $post = Post::with(['comments', 'author', 'category'])->where('id',$id)->get();
+        return new PostResource($post);
     }
 
     /**
