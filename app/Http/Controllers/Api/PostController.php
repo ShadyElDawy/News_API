@@ -169,36 +169,32 @@ class PostController extends Controller
            'vote' => 'required',
         ]);
         $post = Post::find($id);
-        //if user voted up
-        if ($request->get('vote')== 'up'){
-            $voters_up = json_decode($post->voters_up); //post->voters_up of post is json, decode it into array to be able to search into it
-            if($voters_up == null){ //to skip null error
-                $voters_up = [];
-            }
-            if (! in_array($request->user()->id, $voters_up)){ ///if user not in post's voters, do the vote method and add
-                $post->votes_up += 1; //if user picked up, add one to this post's votes_up
-                array_push($voters_up, $request->user()->id); //then add it to voters of this post
-                $post->voters_up = json_encode($voters_up); //convert voters back into json and store it into post's voters
-                $post->save();
-            }
-        }
-        //Same on the other hand, if user voted down
-        if ($request->get('vote')== 'down'){
-            $voters_down = json_decode($post->voters_down);
+        $voters_down = json_decode($post->voters_down); //post->voters_up of post is json, decode it into array to be able to search into it
+        $voters_up = json_decode($post->voters_up);  //same
 
-            if($voters_down == null){
-                $voters_down = [];
+            if (!((in_array($request->user()->id, $voters_up)) || (in_array($request->user()->id, $voters_down)))){     ///if user not in post's voters, do the vote method
+                switch ($request->get('vote')){
+                    case 'up':                      //if user picked up, add one to this post's votes_up
+                        if($voters_up == null){ //to skip null error
+                            $voters_up = [];
+                        }
+                        $post->votes_up += 1;
+                        array_push($voters_up, $request->user()->id);       //then add user to voters_up of this post
+                        $post->voters_up = json_encode($voters_up);             //convert voters back into json and store it into post's voters
+                        $post->save();
+                        break;
+
+                    case 'down':            //if user picked down, add one to this post's votes_down
+                        if($voters_down == null){
+                            $voters_down = [];
+                        }
+                        $post->votes_down += 1; //if user picked down, add one to this post's votes_down
+                        array_push($voters_down, $request->user()->id);
+                        $post->voters_down = json_encode($voters_down);
+                        $post->save();
+                        break;
+                }
             }
-            if (! in_array($request->user()->id, $voters_down)){
-                $post->votes_down += 1; //if user picked down, add one to this post's votes_down
-                array_push($voters_down, $request->user()->id);
-                $post->voters_down = json_encode($voters_down);
-                $post->save();
-
-            }
-
-        }
-
         return new PostResource($post);
     }
 
