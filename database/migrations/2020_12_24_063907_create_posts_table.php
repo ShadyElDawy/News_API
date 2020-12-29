@@ -19,8 +19,9 @@ class CreatePostsTable extends Migration
             $table->text('content');
             $table->dateTime('date_written');
             $table->string('featured_image')->nullable(); //can be left null
-            $table->integer('votes_up')->nullable(); 
-            $table->integer('votes_down')->nullable(); 
+            $table->integer('votes_up')->nullable();
+            $table->integer('votes_down')->nullable();
+            $table->text('voters')->nullable();
 
             //relationships
             $table->integer('user_id');

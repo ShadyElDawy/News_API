@@ -8,6 +8,7 @@ use App\Http\Resources\CommentsResource;
 use App\Http\Resources\PostResource;
 use App\Http\Resources\PostsResource;
 use App\Post;
+use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -154,6 +155,38 @@ class PostController extends Controller
 
         //return response(['data'=>$post, 'title'=> "$Cattitle"],200); //to return data and catagory name
         //return new PostResource([$post, 'title'=> "$Cattitle"]); //alsso working
+        return new PostResource($post);
+    }
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @return PostResource
+     */
+    public function votes(Request $request, $id){
+        //get the post id, user input and check whether he voted up or down
+        $request->validate([
+           'vote' => 'required',
+        ]);
+        $post = Post::find($id);
+        $voters = json_decode($post->voters); //$post->voters is json, decode it into array to be able to search into it
+        if ($voters == null){ //to skip null error
+            $voters = [];
+        }
+        if (! in_array($request->user()->id, $voters)){ //if user not in post's voters, do the vote method and add
+
+            if ($request->get('vote')== 'up'){
+                $post->votes_up += 1; //if user picked up, add one to this post's votes_up
+            }
+            if ($request->get('vote')== 'down'){
+                $post->votes_down += 1; //if user picked down, add one to this post's votes_down
+            }
+            array_push($voters, $request->user()->id); //then add it to voters of this post
+            $post->voters = json_encode($voters); //convert voters back into json and store it into post's voters
+
+            $post->save();
+        }
+
         return new PostResource($post);
     }
 
