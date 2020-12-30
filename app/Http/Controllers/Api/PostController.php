@@ -174,13 +174,13 @@ class PostController extends Controller
 
             if (!((in_array($request->user()->id, $voters_up)) || (in_array($request->user()->id, $voters_down)))){     ///if user not in post's voters, do the vote method
                 switch ($request->get('vote')){
-                    case 'up':                      //if user picked up, add one to this post's votes_up
+                    case 'up':         //if user picked up, add one to this post's votes_up
                         if($voters_up == null){ //to skip null error
                             $voters_up = [];
                         }
                         $post->votes_up += 1;
                         array_push($voters_up, $request->user()->id);       //then add user to voters_up of this post
-                        $post->voters_up = json_encode($voters_up);             //convert voters back into json and store it into post's voters
+                        $post->voters_up = json_encode($voters_up);        //convert voters back into json and store it into post's voters
                         $post->save();
                         break;
 

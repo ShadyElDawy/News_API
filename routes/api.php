@@ -17,10 +17,10 @@ use Illuminate\Http\Request;
 
 /** @user related
  * */
-Route::get('/authors', 'Api\\UserController@index');
-Route::get('/authors/{id}', 'Api\\UserController@show'); //takes param
-Route::get('posts/authors/{id}', 'Api\\UserController@posts'); //takes param
-Route::get('comments/authors/{id}', 'Api\\UserController@comments');
+Route::get('/authors', 'Api\UserController@index');
+Route::get('/authors/{id}', 'Api\UserController@show'); //takes param
+Route::get('posts/authors/{id}', 'Api\UserController@posts'); //takes param
+Route::get('comments/authors/{id}', 'Api\UserController@comments');
 
 // end of User Related
 
@@ -35,20 +35,20 @@ Route::get('comments/posts/{id}', 'Api\PostController@comments');
 
 // end of post related
 
-Route::post('register', 'api\UserController@store');
-Route::post('token', 'api\UserController@getToken');
+Route::post('register', 'Api\UserController@store');
+Route::post('token', 'Api\UserController@getToken');
 
 
 //use auth for all post routes to insure user is logged in
 Route::middleware('auth:api')->group( function() {
-    Route::post('update-user/{id}','api\UserController@update');
-    Route::post('posts','api\PostController@store'); //create new post
-    Route::post('posts/{id}','api\PostController@update'); //create new post
-    Route::delete('posts/{id}','api\PostController@destroy'); //delete post
+    Route::post('update-user/{id}','Api\UserController@update');
+    Route::post('posts','Api\PostController@store'); //create new post
+    Route::post('posts/{id}','Api\PostController@update'); //create new post
+    Route::delete('posts/{id}','Api\PostController@destroy'); //delete post
 
 
-    Route::post('comments/posts/{id}','api\CommentController@store'); //create new post
-    Route::post('votes/posts/{id}','api\PostController@votes'); //one vote route
+    Route::post('comments/posts/{id}','Api\CommentController@store'); //create new post
+    Route::post('votes/posts/{id}','Api\PostController@votes'); //one vote route
 
 
 
