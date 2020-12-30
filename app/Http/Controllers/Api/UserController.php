@@ -91,12 +91,16 @@ class UserController extends Controller
         //mail can't be changed
         //check if
         $user = User::find($id);
-        if($request->has('name')){
-            $user->name=$request->get('name');
-        }
-        if($request->has('avatar')){
-            $user->avatar = $request->get('avatar');
-        }
+        abort_if($user->id !== auth()->id(), 403); //to prevent another user to update other's users
+
+//        if($request->has('name')){
+//            $user->name=$request->get('name');
+//        }
+//        if($request->has('avatar')){
+//            $user->avatar = $request->get('avatar');
+//        }
+        $user->update($request->all()); ////update data in db with data given in request (input) directly
+
 
         if ($request->hasFile('avatar')){
             $featuredImage = $request->file('avatar'); //getting the image
@@ -110,8 +114,6 @@ class UserController extends Controller
 
             $user->avatar = url('/') .'/images/'.$filename; // goto file path and get the image from the path
         }
-
-
 
         $user->save(); //save to database
         return new UserResource($user);

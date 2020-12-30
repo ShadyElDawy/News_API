@@ -39,11 +39,14 @@ class PostController extends Controller
             'category_id' => 'required',
         ]); //required that user pick category from droplist menu, each category will be linked to an id that exitst in db (e.g. 'sport' => '5')
 
-        $post = new Post();
-        $post->user_id = $request->user()->id; //returns user object -> id who creating the post from request (relationships)
+          $post = new Post();
+          $post->user_id = $request->user()->id; //returns user object -> id who creating the post from request (relationships)
+
         $post->title = $request->get('title');
         $post->content = $request->get('content');
         $post->category_id = $request->get('category_id');
+
+        // $post = Post::create($request->all()); used to insert all data sent directly to db will work instead, if we falsed "stict" value in config/database
 
         //TODO handle 404 error
         if ($request->hasFile('featured_image')){
@@ -61,9 +64,9 @@ class PostController extends Controller
 
         $post->votes_up = 0;
         $post->votes_down = 0;
-        $post->date_written= now();
-        $category = Category::find($post->category_id);
-        $Cattitle= $category->title;
+        $post->date_written = now();
+        //$category = Category::find($post->category_id);
+        //$Cattitle= $category->title;
         $post->save();
         /*
        $conc = DB::table('posts')
@@ -112,22 +115,25 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
+
         //no validation, it's optional to update or not
         $user= $request->user(); //returns user object who creating the post from request (relationships)
         $post = Post::find($id);
+        abort_if($post->user_id !== auth()->id(), 403); //to check if the current user who is updating the post is the real owner of the post
+        $post->update($request->all()); //update data in db with data given in request (input) directly
 
-        //if user Updated title
-        if($request->has('title')){
-            $post->title = $request->get('title');
-        }
-        //if user udated content
-        if($request->has('content')){
-            $post->content = $request->get('content');
-        }
-        //if user updated category
-        if($request->has('category_id')){
-            $post->category_id = $request->get('category_id');
-        }
+//        //if user Updated title
+//        if($request->has('title')){
+//            $post->title = $request->get('title');
+//        }
+//        //if user updated content
+//        if($request->has('content')){
+//            $post->content = $request->get('content');
+//        }
+//        //if user updated category
+//        if($request->has('category_id')){
+//            $post->category_id = $request->get('category_id');
+//        }
 
         //TODO handle 404 error
         if ($request->hasFile('featured_image')){
@@ -142,9 +148,8 @@ class PostController extends Controller
 
             $post->featured_image = url('/') .'/images/'.$filename; // goto file path and get the image from the path
         }
-        $category = Category::find($post->category_id);
-        $Cattitle= $category->title;
         $post->save();
+
         /*
        $conc = DB::table('posts')
            ->join('categories', 'posts.category_id', '=', 'categories.id')
@@ -153,8 +158,6 @@ class PostController extends Controller
            ->where('posts.title', '=',"$post->title")
            ->get();*/
 
-        //return response(['data'=>$post, 'title'=> "$Cattitle"],200); //to return data and catagory name
-        //return new PostResource([$post, 'title'=> "$Cattitle"]); //alsso working
         return new PostResource($post);
     }
 

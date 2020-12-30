@@ -17,7 +17,7 @@ class CreatePostsTable extends Migration
             $table->bigIncrements('id');
              $table->string('title');
             $table->text('content');
-            $table->dateTime('date_written');
+            $table->dateTime('date_written')->nullable()->default(null);
             $table->string('featured_image')->nullable(); //can be left null
             $table->integer('votes_up')->nullable();
             $table->integer('votes_down')->nullable();

@@ -17,13 +17,10 @@ class PostResource extends JsonResource
         return parent::toArray($request);
 
 //        return [
-//            'id' => $this->id,
-//            'title' => $this->title,
 //            'content' => $this->content,
 //            'user_id' => $this->user_id,
+//            'username'=> $this->user->name,
 //            'category_id' => $this->category_id,
-//            'category_title' => $this->cattitle,
-//
 //        ];
     }
 }
