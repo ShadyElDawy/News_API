@@ -189,7 +189,7 @@ class PostController extends Controller
         $voters_down = json_decode($post->voters_down); //post->voters_up of post is json, decode it into array to be able to search into it
         $voters_up = json_decode($post->voters_up);  //same
 
-        if($voters_up == null){ //to skip null error
+        if($voters_up == null){ //to skip null error in an_array func
             $voters_up = [];
         }
         if($voters_down == null){
@@ -225,6 +225,6 @@ class PostController extends Controller
             return $this->apiResponse(null,"not found",404);
         }
         $post->delete(); //destroy post
-        return new PostResource($post);
+        return $this->apiResponse(new PostResource($post));
     }
 }
