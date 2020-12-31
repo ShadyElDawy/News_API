@@ -23,18 +23,16 @@ class PostController extends Controller
     public function index()
     {
         //get all posts, attached wit it's comments and authors
-        //$posts = Post::with(['comments', 'author', 'category'])->paginate(15);
         $posts = Post::with(['comments', 'author', 'category'])->paginate(15);
 
         //return $this->apiResponse(PostResource::collection($posts),404);
-
 
         //return new PostsResource($posts);
         return (new PostsResource($posts))
             ->response()
             ->setStatusCode(200);
 
-        //return PostResource::collection($posts); working
+        //return PostResource::collection($posts); also working
     }
 
 
@@ -124,7 +122,6 @@ class PostController extends Controller
         $comments = $post->comments()->paginate(15);
         return new CommentsResource($comments);
     }
-
     /**
      * @param Request $request
      * @param $id
@@ -132,7 +129,6 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-
         //no validation, it's optional to update or not
         $user= $request->user(); //returns user object who creating the post from request (relationships)
         $post = Post::find($id);
@@ -169,7 +165,6 @@ class PostController extends Controller
             $post->featured_image = url('/') .'/images/'.$filename; // goto file path and get the image from the path
         }
         $post->save();
-
         /*
        $conc = DB::table('posts')
            ->join('categories', 'posts.category_id', '=', 'categories.id')
@@ -177,7 +172,6 @@ class PostController extends Controller
            ->where('posts.category_id', '=',"$post->category_id")
            ->where('posts.title', '=',"$post->title")
            ->get();*/
-
         return new PostResource($post);
     }
 
@@ -195,12 +189,16 @@ class PostController extends Controller
         $voters_down = json_decode($post->voters_down); //post->voters_up of post is json, decode it into array to be able to search into it
         $voters_up = json_decode($post->voters_up);  //same
 
+        if($voters_up == null){ //to skip null error
+            $voters_up = [];
+        }
+        if($voters_down == null){
+            $voters_down = [];
+        }
+
             if (!((in_array($request->user()->id, $voters_up)) || (in_array($request->user()->id, $voters_down)))){     ///if user not in post's voters, do the vote method
                 switch ($request->get('vote')){
                     case 'up':         //if user picked up, add one to this post's votes_up
-                        if($voters_up == null){ //to skip null error
-                            $voters_up = [];
-                        }
                         $post->votes_up += 1;
                         array_push($voters_up, $request->user()->id);       //then add user to voters_up of this post
                         $post->voters_up = json_encode($voters_up);        //convert voters back into json and store it into post's voters
@@ -208,9 +206,6 @@ class PostController extends Controller
                         break;
 
                     case 'down':            //if user picked down, add one to this post's votes_down
-                        if($voters_down == null){
-                            $voters_down = [];
-                        }
                         $post->votes_down += 1; //if user picked down, add one to this post's votes_down
                         array_push($voters_down, $request->user()->id);
                         $post->voters_down = json_encode($voters_down);
@@ -218,7 +213,7 @@ class PostController extends Controller
                         break;
                 }
             }
-        return new PostResource($post);
+        return $this->apiResponse(new PostResource($post));
     }
 
 

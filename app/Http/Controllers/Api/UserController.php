@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
+    use ApiResponseTrait;
     /**
      * @return UsersResource
      */
@@ -55,8 +56,13 @@ class UserController extends Controller
      */
     public function show($id) //this param is what is in route {id}
     {
+        $user = User::find($id);
+        if (!$user){
+            return $this->apiResponse(null,"not found",404);
+        }
 
-        return new UserResource(User::find($id));
+        return $this->apiResponse(new UserResource($user));
+
     }
 
     /**
@@ -149,6 +155,10 @@ class UserController extends Controller
     {
         //
     }
+
+    /**
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function logout()
     {
 
