@@ -26,10 +26,10 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Api/PostController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Api/PostController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Api/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Api/UserController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Resources/PostResource.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Resources/PostResource.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Resources/PostsResource.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Resources/PostsResource.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Observers/UserObserver.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Observers/UserObserver.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/database.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/database.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2020_12_24_063907_create_posts_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2020_12_24_063907_create_posts_table.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -201,7 +201,9 @@
       <workItem from="1609201421558" duration="8335000" />
       <workItem from="1609259752373" duration="15182000" />
       <workItem from="1609351323775" duration="3152000" />
-      <workItem from="1609355151487" duration="4125000" />
+      <workItem from="1609355151487" duration="9238000" />
+      <workItem from="1609424341146" duration="3431000" />
+      <workItem from="1609428301111" duration="17764000" />
     </task>
     <servers />
   </component>
@@ -257,13 +259,17 @@
       <screen x="0" y="0" width="1366" height="738" />
     </state>
     <state x="121" y="0" key="SettingsEditor/0.0.1366.738@0.0.1366.738" timestamp="1609023843794" />
-    <state x="339" y="165" width="672" height="677" key="run.anything.popup" timestamp="1609204117735">
+    <state x="289" y="0" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1609442268916">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="339" y="165" width="672" height="677" key="run.anything.popup/0.0.1366.738@0.0.1366.738" timestamp="1609204117735" />
-    <state x="353" y="59" width="672" height="293" key="search.everywhere.popup" timestamp="1609352856136">
+    <state x="289" y="0" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.0.1366.738@0.0.1366.738" timestamp="1609442268916" />
+    <state x="339" y="165" width="672" height="677" key="run.anything.popup" timestamp="1609432135151">
       <screen x="0" y="0" width="1366" height="738" />
     </state>
-    <state x="353" y="59" width="672" height="293" key="search.everywhere.popup/0.0.1366.738@0.0.1366.738" timestamp="1609352856136" />
+    <state x="339" y="165" width="672" height="677" key="run.anything.popup/0.0.1366.738@0.0.1366.738" timestamp="1609432135151" />
+    <state x="353" y="59" width="672" height="293" key="search.everywhere.popup" timestamp="1609444162893">
+      <screen x="0" y="0" width="1366" height="738" />
+    </state>
+    <state x="353" y="59" width="672" height="293" key="search.everywhere.popup/0.0.1366.738@0.0.1366.738" timestamp="1609444162893" />
   </component>
 </project>

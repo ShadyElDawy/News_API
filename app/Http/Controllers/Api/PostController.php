@@ -15,15 +15,26 @@ use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
+    use ApiResponseTrait;
 
     /**
-     * @return PostsResource
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
         //get all posts, attached wit it's comments and authors
-        $post = Post::with(['comments', 'author', 'category'])->paginate(10);
-        return new PostsResource($post);
+        //$posts = Post::with(['comments', 'author', 'category'])->paginate(15);
+        $posts = Post::with(['comments', 'author', 'category'])->paginate(15);
+
+        //return $this->apiResponse(PostResource::collection($posts),404);
+
+
+        //return new PostsResource($posts);
+        return (new PostsResource($posts))
+            ->response()
+            ->setStatusCode(200);
+
+        //return PostResource::collection($posts); working
     }
 
 
@@ -76,14 +87,14 @@ class PostController extends Controller
            ->where('posts.title', '=',"$post->title")
            ->get();*/
 
-        //return response(['data'=>$post, 'title'=> "$Cattitle"],200); //to return data and catagory name
-        //return new PostResource([$post, 'title'=> "$Cattitle"]); //alsso working
+
+        //return $this->apiResponse(new PostResource($post));
         return new PostResource($post);
     }
 
     /**
      * @param $id
-     * @return PostResource
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
      */
     public function show($id)
     {
@@ -93,8 +104,11 @@ class PostController extends Controller
         return new PostResource($post,$post->comments); //it's not a collection resource, but returns only one post/object
         //return response(["posts" => $post, "comments" => $post->comments],200); //also working
         */
+        if (!Post::find($id)){
+            return $this->apiResponse(null,"not found",404);
+        }
         $post = Post::with(['comments', 'author', 'category'])->where('id',$id)->get();
-        return new PostResource($post);
+        return $this->apiResponse(new PostResource($post));
     }
 
     /**
@@ -104,6 +118,9 @@ class PostController extends Controller
 
     public function comments($id){
         $post = Post::find($id);
+        if (!$post){
+            return $this->apiResponse(null,"not found",404);
+        }
         $comments = $post->comments()->paginate(15);
         return new CommentsResource($comments);
     }
@@ -119,6 +136,9 @@ class PostController extends Controller
         //no validation, it's optional to update or not
         $user= $request->user(); //returns user object who creating the post from request (relationships)
         $post = Post::find($id);
+        if (!$post){ //if not found
+            return $this->apiResponse(null,"not found",404);
+        }
         abort_if($post->user_id !== auth()->id(), 403); //to check if the current user who is updating the post is the real owner of the post
         $post->update($request->all()); //update data in db with data given in request (input) directly
 
@@ -204,7 +224,11 @@ class PostController extends Controller
 
     public function destroy($id)
     {
-        $post = Post::find($id);
+
+        $post = auth()->user()->posts->find($id); // allow logged in user to search only his own posts not all db, so that he can delete only his own posts,
+        if (!$post){
+            return $this->apiResponse(null,"not found",404);
+        }
         $post->delete(); //destroy post
         return new PostResource($post);
     }

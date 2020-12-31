@@ -93,9 +93,10 @@ class UserController extends Controller
         $user = User::find($id);
         abort_if($user->id !== auth()->id(), 403); //to prevent another user to update other's users
 
-//        if($request->has('name')){
-//            $user->name=$request->get('name');
-//        }
+        if($request->has('password')){
+            $user->password = Hash::make($request->get('password'));
+        }
+        $request->merge(['password' => $user->password]);
 //        if($request->has('avatar')){
 //            $user->avatar = $request->get('avatar');
 //        }
@@ -148,4 +149,25 @@ class UserController extends Controller
     {
         //
     }
+    public function logout()
+    {
+
+        if (auth()->user()) {
+            $user = auth()->user(); //current user
+            $user->api_token = null; // clear api token, you need to false "strict" in /config/database.php
+            $user->api_token = bin2hex(openssl_random_pseudo_bytes(30)); //regenerate token
+            $user->save();
+
+            return response()->json([
+                'message' => 'Thank you for using our application',
+            ]);
+        }
+        return response()->json([
+            'error' => 'Unable to logout user',
+            'code' => 401,
+        ], 401);
+    }
+
+
+
 }
