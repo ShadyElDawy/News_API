@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
-    use ApiResponseTrait;
+
 
     /**
      * @return \Illuminate\Http\JsonResponse
@@ -74,20 +74,12 @@ class PostController extends Controller
         $post->votes_up = 0;
         $post->votes_down = 0;
         $post->date_written = now();
-        //$category = Category::find($post->category_id);
-        //$Cattitle= $category->title;
+
         $post->save();
-        /*
-       $conc = DB::table('posts')
-           ->join('categories', 'posts.category_id', '=', 'categories.id')
-           ->select(['posts.title', 'posts.content','posts.category_id','posts.id', 'categories.title'])
-           ->where('posts.category_id', '=',"$post->category_id")
-           ->where('posts.title', '=',"$post->title")
-           ->get();*/
 
 
         //return $this->apiResponse(new PostResource($post));
-        return new PostResource($post);
+        return $this->apiResponse(new PostResource($post),201);
     }
 
     /**
@@ -129,13 +121,16 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //no validation, it's optional to update or not
+        $request->validate([
+            'title' => 'required',
+            'content' => 'required',
+        ]);
         $user= $request->user(); //returns user object who creating the post from request (relationships)
         $post = Post::find($id);
         if (!$post){ //if not found
             return $this->apiResponse(null,"not found",404);
         }
-        abort_if($post->user_id !== auth()->id(), 403); //to check if the current user who is updating the post is the real owner of the post
+        abort_if($post->user_id !== auth()->id(), 403,"unauthorized to perform that action"); //to check if the current user who is updating the post is the real owner of the post
         $post->update($request->all()); //update data in db with data given in request (input) directly
 
 //        //if user Updated title
@@ -172,7 +167,8 @@ class PostController extends Controller
            ->where('posts.category_id', '=',"$post->category_id")
            ->where('posts.title', '=',"$post->title")
            ->get();*/
-        return new PostResource($post);
+        return $this->apiResponse(new PostResource($post));
+
     }
 
     /**

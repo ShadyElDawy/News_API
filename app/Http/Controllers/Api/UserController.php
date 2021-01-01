@@ -18,14 +18,13 @@ use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
-    use ApiResponseTrait;
     /**
      * @return UsersResource
      */
     public function index()
     {
         $users = User::all();
-        return new UsersResource($users);
+        return $this->apiResponse(new UsersResource($users));
     }
 
     /**
@@ -47,7 +46,7 @@ class UserController extends Controller
         $user->password = Hash::make($request->get('password')); //get user password and hash it into db
 
         $user->save(); //save user to database
-        return new UserResource($user); //return user object data(email, name etc) and post it to route register
+        return $this->apiResponse(new UserResource($user),201); //return user object data(email, name etc) and post it to route register
     }
 
     /**
@@ -72,6 +71,9 @@ class UserController extends Controller
     public function posts($id)
     {
         $user = User::find($id);  //get the object
+        if (!$user){
+            return $this->apiResponse(null,"not found",404);
+        }
         $posts = $user->posts()->paginate(5); //posts into obeject
         return new AuthorPostsResource($posts); //can use UserResource but it doesn't return links and meta as it's not collection, so no pagination
     }
@@ -83,6 +85,9 @@ class UserController extends Controller
      */
     public function comments($id){
         $user = User::find($id);
+        if (!$user){
+            return $this->apiResponse(null,"not found",404);
+        }
         $comments = $user->comments()->paginate(15);
         return new AuthorCommentsResource($comments);
     }
@@ -94,20 +99,15 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //mail can't be changed
-        //check if
+
         $user = User::find($id);
-        abort_if($user->id !== auth()->id(), 403); //to prevent another user to update other's users
+        abort_if($user->id !== auth()->id(), 403,"unauthorized to perform that action"); //to prevent another user to update other's users
 
         if($request->has('password')){
-            $user->password = Hash::make($request->get('password'));
+            $user->password = Hash::make($request->get('password')); //if user updated password hash it and merge to request
         }
         $request->merge(['password' => $user->password]);
-//        if($request->has('avatar')){
-//            $user->avatar = $request->get('avatar');
-//        }
         $user->update($request->all()); ////update data in db with data given in request (input) directly
-
 
         if ($request->hasFile('avatar')){
             $featuredImage = $request->file('avatar'); //getting the image
@@ -121,9 +121,9 @@ class UserController extends Controller
 
             $user->avatar = url('/') .'/images/'.$filename; // goto file path and get the image from the path
         }
-
-        $user->save(); //save to database
-        return new UserResource($user);
+        $user->update($request->all()); ////update data in db with data given in request (input) directly
+        //$user->save(); //save to database
+        return $this->apiResponse(new UserResource($user));
 
     }
 
@@ -142,19 +142,9 @@ class UserController extends Controller
             $user = User::where('email', $request->get('email'))->first(); //if login true, grap this user using the email he logged in with
             return new TokenResource(['token'=>$user->api_token]); //then api_token gets posted to route we specified, format is to return as json not string.
         }
-        return 'not found';
+        return $this->apiResponse(null,"not found",404);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 
     /**
      * @return \Illuminate\Http\JsonResponse
