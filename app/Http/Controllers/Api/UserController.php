@@ -11,6 +11,7 @@ use App\Http\Resources\UserResource;
 
 use App\User;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -136,13 +137,23 @@ class UserController extends Controller
         $request->validate([
             'email' => 'required',
             'password' => 'required',
-        ]); //validations of user inputs
+        ]);
         $credentials = $request -> only('email','password'); //request has a lot of other info that we don't need
         if (Auth::attempt($credentials)){
-            $user = User::where('email', $request->get('email'))->first(); //if login true, grap this user using the email he logged in with
-            return new TokenResource(['token'=>$user->api_token]); //then api_token gets posted to route we specified, format is to return as json not string.
+            $user = $request->user();
+            $tokenResult = $user->createToken('Personal Access Token');
+            $token = $tokenResult->token;
+            $token->save();
+            return response()->json([
+                'access_token' => $tokenResult->accessToken,
+                'token_type' => 'Bearer',
+                'expires_at' => Carbon::parse(
+                    $tokenResult->token->expires_at
+                )->toDateTimeString()
+            ]);
+            //return new TokenResource(['token'=>$user->api_token]); //then api_token gets posted to route we specified, format is to return as json not string.
         }
-        return $this->apiResponse(null,"not found",404);
+        return $this->apiResponse(null,"Unauthorized",404);
     }
 
 
@@ -152,21 +163,13 @@ class UserController extends Controller
     public function logout()
     {
 
-        if (auth()->user()) {
-            $user = auth()->user(); //current user
-            $user->api_token = null; // clear api token, you need to false "strict" in /config/database.php
-            $user->api_token = bin2hex(openssl_random_pseudo_bytes(30)); //regenerate token
-            $user->save();
-
-            return response()->json([
-                'message' => 'Thank you for using our application',
-            ]);
-        }
+        auth()->user()->token()->revoke(); //logout from current device
         return response()->json([
-            'error' => 'Unable to logout user',
-            'code' => 401,
-        ], 401);
+            'message' => 'Successfully logged out'
+        ]);
+
     }
+
 
 
 
